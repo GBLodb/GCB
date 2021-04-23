@@ -18,6 +18,8 @@ Large Ore Deposits\(下文简称lods\)算是比较强大的矿物生成控制模
 
 `VanillaGen`和`Deposits`文件夹中都有多个cfg文件，每个都对应了一种"矿物"，`VanillaGen`文件夹中的文件均为摆设空壳子，相对于`Deposits`文件夹中真正的矿脉来说功能残疾。`Deposits`文件夹中有着功能健全的模板，这里以`coal.cfg`为例来一项一项解读：
 
+顺带一提，所有的`minecraft:`命名空间都不必写，也就是说`stone:*`实为`minecraft:stone:*`
+
 ```text
 # 配置文件
 
@@ -30,6 +32,7 @@ Config {
 Deposit {
     # 定义此矿脉中的矿物和它们的权重等级
     # 格式: 方块ID/矿辞 [, 权重]
+    # 当定义为矿辞时，自动选取此矿辞中的第一项
     # 例如(矿物ID, 不推荐这样写):
     #      minecraft:coal_ore
     #      minecraft:gold_ore, 2
@@ -46,10 +49,11 @@ Deposit {
     # 定义矿脉稀有度(单位: 区块)
     # 数值越高，矿脉越稀有
     # 例如设置为1000，即为1000个区块中会生成1个矿脉
-    # 即 1 / 1000 * 100% = 0.1% [范围: 1 ~ 256000]
+    # 即每个区块有1 / 1000 * 100% = 0.1%的几率生成此矿脉 [范围: 1 ~ 256000]
     I:rarity=800
 
-    # 定义矿物生成时会替换什么方块。 [默认: [stone:*]]
+    # 定义矿物生成时会替换什么方块
+    # 支持*通配符  [默认: [stone:*]]
     S:replaceableBlocks <
         stone:*
      >
@@ -83,59 +87,68 @@ Deposit {
     }
 
     ##########################################################################################################
-    # Dimensions
+    # 维度
     #--------------------------------------------------------------------------------------------------------#
-    # Defines the dimensions which this deposit can be generated in.
-    # Dimension is specified by its ID [-1 - Nether, 0 - Overworld, 1 - The End, etc.]
-    # Each ID must be on a separate line without any delimiters.
-    # If the whitelist is set, the blacklist will be ignored.
+    # 定义此矿脉会生成的维度
+    # 通过维度ID定义维度 [-1 - 地狱, 0 - 主世界, 1 - 末地, 等等]
+    # 一行一个ID，不要添加分隔符
+    # 如:
+    #    -1
+    #    0
+    #    1
+    # 如果设置了白名单，黑名单会被忽略
     ##########################################################################################################
 
     Dimensions {
-        #  [default: ]
+        #  [默认: ]
         S:blackList <
          >
 
-        #  [default: ]
+        #  [默认: ]
         S:whiteList <
          >
     }
 
     ##########################################################################################################
-    # Biomes
+    # 生物群系
     #--------------------------------------------------------------------------------------------------------#
-    # Defines the biomes which this deposit can be generated in.
-    # Biome is specified either by its numeric ID or by name (case-insensitive)
-    # Each ID must be on a separate line without any delimiters.
-    # If the whitelist is set, the blacklist will be ignored.
+    # 定义此矿脉会生成的维度
+    # 可以通过数字ID或群系名称(区分大小写)定义维度
+    # 一行一个ID，不要添加分隔符
+    # 如:
+    #    -114
+    #    514
+    #    aBiomeID
+    # 如果设置了白名单，黑名单会被忽略
     ##########################################################################################################
 
     Biomes {
-        #  [default: ]
+        #  [默认: ]
         S:blackList <
          >
 
-        #  [default: ]
+        #  [默认: ]
         S:whiteList <
          >
     }
 
     ##########################################################################################################
-    # Indicator
+    # 指示物
     #--------------------------------------------------------------------------------------------------------#
-    # Defines the aboveground indicator for this deposit (e.g., a rare flower or a combination of circles of different flowers)
+    # 定义此矿脉的地表指示物(比如一圈稀有的花之类的，或ContentTweaker自带的oreSample之类的东西)
     ##########################################################################################################
 
     Indicator {
-        # Defines the circles of indicators and their radiuses.
-        # Syntax: indicatorId [, circleRadius]
-        # The order of the circles is always shuffled.
-        # The circles with the same radius will be randomly selected.
-        # If the radius is not defined, it will be selected from the minimum available, starting from 1.
-        # Examples:
+        # 定义每圈的指示物和圈的大小
+        # 格式: 指示物ID [, 圈的大小]
+        # 排列顺序是从小到大从里到外排出去的
+        # 圈大小相同的指示物会被随机选取
+        # 如果没有定义圈大小，则从1开始自动选择最小的可行圈数
+        # 例如:
         #      minecraft:cornflower, 2
         #      minecraft:orange_tulip, 4
-        #  [default: [silentgems:glowrose:[gem=onyx], 3], [mysticFlowerBlack, 3], [double_plant:3, 3], [silentgems:glowrose:[gem=onyx], 6], [mysticFlowerBlack, 6], [double_plant:3, 6]]
+        # 如需添加NBT，就这样:
+        #      namespace:blockid:[nbt], radius
         S:circles <
             silentgems:glowrose:[gem=onyx], 3
             mysticFlowerBlack, 3
@@ -145,13 +158,12 @@ Deposit {
             double_plant:3, 6
          >
 
-        # Defines the percentage of the indicator shape that will be visible. [range: 0.0 ~ 100.0, default: 60.0]
-        S:continuity=60.0
-
-        # Defines the maximum displacement of the indicator shape elements. [range: 0 ~ 16, default: 1]
+        # 定义显示指示物形状连续性的程度 [范围: 0.0 ~ 100.0, 默认: 60.0]
+        S:=60.
+        # 定义指示物替换时的最大值 [范围: 0 ~ 16, 默认: 1]
         I:distortion=1
 
-        # Defines the id of the single-block indicator. [default: ]
+        # 定义单方块指示物的ID [默认: ]
         S:id=
     }
 
@@ -161,3 +173,4 @@ Deposit {
 
 ```
 
+基本就是这样了，复制一份模板，根据自己的需要修改数值后输入`/lods reload`指令重载配置即可，矿脉就会正常生成了，simple as that
