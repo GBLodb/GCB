@@ -174,3 +174,5 @@ Deposit {
 ```
 
 基本就是这样了，复制一份模板，根据自己的需要修改数值后输入`/lods reload`指令重载配置即可，矿脉就会正常生成了，simple as that
+
+值得一提的是，此模组还提供了几个调试用指令，如`/lods gen <deposit>`即可生成一个对应矿脉，并将其基本信息打印在聊天框。以及`/lods test <deposit> <amount>`在自己当前位置生成一个对应大小的对应矿脉。而`/lods strip chunk/around`则可以清除所在/3x3区块内所有不是矿物的方块。`/lods dress chunk/around/all`则相反，将当前区块/3x3区块内/全世界范围内被strip的方块复原
