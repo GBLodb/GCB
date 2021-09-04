@@ -2,7 +2,7 @@
 
 ## 前言
 
-Corpse Complex 配置文件全翻译解析讲解.
+Corpse Complex 配置文件全翻译解析讲解 + 官方 Wiki 注释翻译.
 
 使用模组：[Corpse Complex](https://www.curseforge.com/minecraft/mc-mods/corpse-complex)\(CurseForge Link\)
 
@@ -40,6 +40,7 @@ effects {
 
     # 列出玩家重生后获得的,可以被使用 "Curative Items" 列表中物品消除的药水效果
     # 格式: [效果注册名] [时长 (秒)] [效果等级]
+    # 最大值为 1600 秒, 10 级. "Uncurable Respawn Effects" 同理.
     S:"Curable Respawn Effects" <
      >
 
@@ -82,27 +83,38 @@ effects {
         B:"Gradual Recovery"=false
 
         # 设置最大生命值修改
+        # 在 -1024 ~ 1024 之间.
+        # 除非有其他模组或不可抗力的影响, 设置过低会导致玩家陷入无限死亡/重生的死循环.
         D:"Maximum Health Modifier"=0.0
 
         # 设置护甲值修改
+        # 玩家的总护甲值不能低于 0 .
         D:"Armor Modifier"=0.0
 
         # 设置护甲硬度值修改
+        # 在 -20 ~ 20 之间.
         D:"Armor Toughness Modifier"=0.0
 
         # 设置攻击值修改
+        # 在 -2048 ~ 2048 之间.
         D:"Attack Damage Modifier"=0.0
 
         # 设置攻击速度值修改
+        # 在 -1.0 ~ 1.0 之间.
+        # -1.0 就是无法攻击, 1.0 则是两倍攻击速度.
         D:"Attack Speed Percent Modifier"=0.0
 
         # 设置移动速度值修改
+        # 在 -1.0 ~ 1.0 之间.
+        # -1.0 就是无法移动, 1.0 则是两倍移速.
         D:"Movement Speed Percent Modifier"=0.0
 
         # 设置为 true 启用当自定义重生效果生效时不能吃食物
+        # 对所有 extend 了原版 ItemFood 类的物品都有效, 此外还包括原版和 Pam's Harvestcraft 的蛋糕.
         B:"Cannot Eat Food"=false
 
         # 设置为 true 启用当自定义重生效果生效时不能获得经验
+        # 经验球仍会被玩家吸引, 但玩家无法拾取它们也无法从它们获取经验.
         B:"Cannot Gain XP"=false
     }
 
@@ -120,6 +132,7 @@ experience {
     B:"Enable Experience Module"=false
 
     # 设置为 true 启用死亡后保存所有经验
+    # 同样的, 不会掉落任何经验球.
     B:"Keep All XP"=false
 
     # 死亡后丢失的经验数
@@ -146,17 +159,21 @@ hunger {
     # 设置为 true 启用饥饿模块
     B:"Enable Hunger Module"=false
 
-    # 设置为 true 启用死亡后保存饥饿值
+    # 设置为 true 启用死亡后延续原饥饿值
     B:"Keep Food Level"=false
 
-    # 重生后可获得的最大饥饿值
-    I:"Maximum Food Level"=20
+    # 设置为 true 启用死亡后延续原饱食度
+    B:"Keep Saturation"=false
 
     # 重生后可获得的最少饥饿值
+    # 0 ~ 20 之间.
+    # 如没有启用 "Keep Food Level", 此选项和下一个选项都无效.
     I:"Minimum Food Level"=6
 
-    # 设置为 true 启用死亡后保存饱食度
-    B:"Keep Saturation"=false
+    # 重生后可获得的最大饥饿值
+    # "Minimum Food Level" ~ 20 之间.
+    # 不能低于, 但可以等于 "Minimum Food Level".
+    I:"Maximum Food Level"=20
 }
 
 
@@ -175,6 +192,7 @@ inventory {
     B:"Keep Armor"=false
 
     # 设置为 true 启用死亡后保存非主手快捷栏物品
+    # 不 包 括 主 手 物 品.
     B:"Keep Hotbar"=false
 
     # 设置为 true 启用死亡后保存主手物品
@@ -273,9 +291,12 @@ inventory {
         B:"Enable Soulbinding Enchantment"=false
 
         # 附魔最大等级
+        # 1 ~ 5, 如设置为 1 则不会显示等级.
         I:"Max Level"=1
 
         # 物品被保留时, 扣除多少附魔等级
+        # 0.0 ~ 1.0 之间.
+        # 如果物品仅有 1 级附魔, 扣除时会直接移除附魔.
         D:"Chance to Drop Level on Saved Item"=0.0
 
         # 物品会无视灵魂绑定附魔等级被保存的概率
@@ -285,12 +306,14 @@ inventory {
         D:"Extra Save Probability per Level"=0.0
 
         # 设置为 true 允许灵魂绑定附魔出现在附魔台选项中
+        # 如果没启用, 那就只能找战利品.
         B:"Can Apply at Enchanting Table"=true
 
         # 设置为 true 允许灵魂绑定附魔被附在书上
         B:"Allowed on Books"=true
 
         # 附魔的稀有等级 (COMMON, UNCOMMON, RARE, 或 VERY_RARE)
+        # 会影响附魔经验消耗和战利品生成概率等, 原版机制.
         S:Rarity=VERY_RARE
     }
 
@@ -308,9 +331,11 @@ respawning {
     B:"Enable Respawning Module"=false
 
     # 设置为 true 禁用床设置重生点
+    # 启用此项后, 从技术层面上来讲玩家仍然可以通过床设置重生点, 但这个重生点会在玩家死亡前被删除.
     B:"Disable Bed Spawn Points"=false
 
     # 设置为 true 启用一个可合成的, 使用后会将玩家传送回死亡地点的卷轴
+    # 玩家每次复活后只能使用一次卷轴, 但可以持有多个卷轴.
     B:"Return Scroll"=false
 
     # 如果启用了 "Return Scroll", 设置为 true 将在玩家每次重生后给予玩家一个卷轴
