@@ -20,7 +20,7 @@ Large Ore Deposits\(下文简称lods\)算是比较强大的矿物生成控制模
 
 顺带一提，所有的`minecraft:`命名空间都不必写，也就是说`stone:*`实为`minecraft:stone:*`
 
-```text
+```yaml
 # 配置文件
 
 Config {
